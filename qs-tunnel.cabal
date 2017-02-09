@@ -1,0 +1,29 @@
+name:                qs-tunnel
+version:             0.1.0.0
+synopsis:            Quotesource tunnel proxy
+-- description:
+homepage:            https://github.com/asakul/qs-tunnel#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Denis Tereshkin
+maintainer:          denis@kasan.ws
+copyright:           2017 Denis Tereshkin
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.10
+extra-source-files:  README.md
+
+executable qs-tunnel
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , libatrade
+                     , aeson
+                     , monad-loops
+                     , zeromq4-haskell
+                     , zeromq4-haskell-zap
+                     , text
+                     , bytestring
+                     , time
+                     , hslogger
