@@ -1,5 +1,5 @@
 name:                qs-tunnel
-version:             0.1.0.0
+version:             0.2.0.0
 synopsis:            Quotesource tunnel proxy
 -- description:
 homepage:            https://github.com/asakul/qs-tunnel#readme
@@ -7,7 +7,7 @@ license:             BSD3
 license-file:        LICENSE
 author:              Denis Tereshkin
 maintainer:          denis@kasan.ws
-copyright:           2017 Denis Tereshkin
+copyright:           2017-2019 Denis Tereshkin
 category:            Web
 build-type:          Simple
 cabal-version:       >=1.10
