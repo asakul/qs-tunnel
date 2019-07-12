@@ -15,6 +15,7 @@ import           Data.Time.Clock
 import           ATrade.QuoteSource.Client
 import           ATrade.QuoteSource.Server
 
+import           Control.Applicative
 import           Control.Concurrent
 import           Control.Monad
 import           Control.Monad.Loops
@@ -26,6 +27,13 @@ import           System.Log.Handler.Simple
 import           System.Log.Logger
 import           System.ZMQ4
 import           System.ZMQ4.ZAP
+
+import           Options.Applicative
+
+data CommandLineConfig = CommandLineConfig
+  {
+    clConfigPath :: Maybe FilePath
+  } deriving (Show, Eq)
 
 data UpstreamConfig = UpstreamConfig
   {
@@ -72,14 +80,26 @@ initLogging = do
   updateGlobalLogger rootLoggerName (setLevel DEBUG)
   updateGlobalLogger rootLoggerName (setHandlers [handler])
 
+parseCommandLineConfig :: Parser CommandLineConfig
+parseCommandLineConfig = CommandLineConfig
+  <$> (optional $ strOption (long "config" <> short 'c' <> help "Config to use"))
+
 main :: IO ()
 main = do
+  cfg <- execParser opts
   initLogging
   infoM "main" "Starting"
-  eConf <- eitherDecode . BL.fromStrict <$> B.readFile "qs-tunnel.conf"
+  eConf <- eitherDecode . BL.fromStrict <$> B.readFile (configPath cfg)
   case eConf of
     Left errMsg -> error errMsg
     Right conf  -> runWithConfig conf
+  where
+    configPath cfg = case clConfigPath cfg of
+      Just path -> path
+      Nothing   -> "qs-tunnel.conf"
+    opts = info (parseCommandLineConfig <**> helper)
+       ( fullDesc
+      <> progDesc "Quotesource tunnel" )
 
 runWithConfig conf = do
   withContext $ \ctx ->
@@ -126,6 +146,7 @@ runWithConfig conf = do
                     writeIORef lastHeartbeat now
                     sendMulti downstream $ x :| xs
                   _ -> return ()
+        forever $ threadDelay 100000
   where
     notTimeout ref conf = do
       now <- getCurrentTime

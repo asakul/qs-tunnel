@@ -27,3 +27,4 @@ executable qs-tunnel
                      , bytestring
                      , time
                      , hslogger
+                     , optparse-applicative
