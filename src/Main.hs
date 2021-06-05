@@ -59,11 +59,11 @@ instance FromJSON Config where
     Config                                <$>
     o .:  "downstream"                    <*>
     o .:? "downstream_certificate"        <*>
-    o .:  "client_certificates"           <*>
+    o .:? "client_certificates" .!= []    <*>
     o .:? "whitelist"   .!= []            <*>
     o .:? "blacklist"   .!= []            <*>
     o .:  "upstreams"                     <*>
-    o .:  "upstream_client_certificate"   <*>
+    o .:? "upstream_client_certificate"   <*>
     o .:  "timeout"
 
   parseJSON _ = fail "Expected object"
